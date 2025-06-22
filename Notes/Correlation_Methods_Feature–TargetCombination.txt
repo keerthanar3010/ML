@@ -1,0 +1,155 @@
+## 🔍 Sample DataFrame
+import pandas as pd
+
+data = {
+    "Age": [22, 25, 47, 52, 46, 56],
+    "Salary": [20000, 25000, 52000, 75000, 48000, 91000],
+    "Gender": ["Male", "Female", "Female", "Male", "Female", "Male"],
+    "Purchase": [0, 0, 1, 1, 1, 1],  # Binary target
+    "Segment": ["Low", "Low", "Mid", "High", "Mid", "High"]  # Multi-class target
+}
+df = pd.DataFrame(data)
+```
+
+---
+
+✅ 1. **Numeric Feature – Numeric Target**
+Let’s say we had a numeric target (e.g., “Spending Score”)
+
+```python
+from scipy.stats import pearsonr
+
+# Example: Age vs Salary
+pearsonr(df["Age"], df["Salary"])
+```
+🧠 **Tells you**: Linear relationship between Age and Salary.
+
+---
+
+✅ 2. **Numeric Feature – Binary Target**
+Target = `Purchase` (0/1)
+
+from scipy.stats import pointbiserialr
+
+pointbiserialr(df["Age"], df["Purchase"])
+```
+
+🧠 **Tells you**: Whether people who purchased are typically older or younger.
+
+---
+
+✅ 3. **Numeric Feature – Multi-Class Target**
+Target = `Segment` ("Low", "Mid", "High")
+
+from sklearn.feature_selection import f_classif
+from sklearn.preprocessing import LabelEncoder
+
+X = df[["Age", "Salary"]]
+y = LabelEncoder().fit_transform(df["Segment"])
+
+f_classif(X, y)
+```
+
+🧠 **Tells you**: Which numeric features help classify customers into segments.
+
+---
+
+✅ 4. **Categorical Feature – Binary Target**
+Feature = `Gender`, Target = `Purchase`
+
+from scipy.stats import chi2_contingency
+
+ct = pd.crosstab(df["Gender"], df["Purchase"])
+chi2_contingency(ct)
+```
+
+🧠 **Tells you**: If there's a dependency between gender and purchase behavior.
+
+---
+
+✅ 5. **Categorical Feature – Multi-Class Target**
+Feature = `Gender`, Target = `Segment`
+
+ct2 = pd.crosstab(df["Gender"], df["Segment"])
+chi2_contingency(ct2)
+```
+
+🧠 **Tells you**: If Gender influences what segment a person falls into.
+
+---
+
+✅ 6. **Categorical Feature – Numeric Target**
+Let’s test if Age varies across Genders.
+
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+model = ols('Age ~ C(Gender)', data=df).fit()
+anova = sm.stats.anova_lm(model, typ=2)
+print(anova)
+```
+
+🧠 **Tells you**: If average age differs significantly between males and females.
+
+---
+
+## Bonus: 🎯 Cramér's V for strength between 2 categoricals
+import numpy as np
+
+def cramers_v(confusion_matrix):
+    chi2 = chi2_contingency(confusion_matrix)[0]
+    n = confusion_matrix.sum().sum()
+    r, k = confusion_matrix.shape
+    return np.sqrt(chi2 / (n * (min(r, k)-1)))
+
+cramers_v(ct)  # for Gender vs Purchase
+
+
+
+✅ Summary Table with Example Columns
+
+| Feature       | Target      | Method                 | Example Code        |
+|---------------|-------------|------------------------|---------------------|
+| `Age`         | `Salary`    | Pearson                | `pearsonr()`        |
+| `Age`         | `Purchase`  | Point-Biserial         | `pointbiserialr()`  |
+| `Salary`      | `Segment`   | ANOVA F-test           | `f_classif()`       |
+| `Gender`      | `Purchase`  | Chi-Square             | `chi2_contingency()`|
+| `Gender`      | `Segment`   | Chi-Square / Cramér's V| `cramers_v()`       |
+| `Gender`      | `Age`       | ANOVA                  | `ols() + anova_lm()`|
+
+
+📊 Correlation/Association Methods by Feature–Target Combination
+
+| **Feature Type**      | **Target Type**        | **Recommended Method**              | **Use Case**                                            
+
+| **Numeric**            | **Numeric**            | Pearson, Spearman, Kendall          | Linear or monotonic relationships (e.g. Age vs Salary)      |
+| **Numeric**            | **Binary** (0/1)       | **Point-Biserial Correlation**      | Numeric feature, binary classification target               |
+| **Numeric**            | **Multi-Class**        | **ANOVA F-test**, Mutual Information| Numeric feature to classify categories                      |
+| **Categorical**        | **Binary** (0/1)       | **Chi-Square Test**, Cramér’s V     | Categorical feature to binary target                        |
+| **Categorical**        | **Multi-Class**        | **Chi-Square Test**, Cramér’s V     | Association between two categorical variables               |
+| **Categorical**        | **Numeric**            | **ANOVA**, Eta Squared              | Effect of categories on numeric outcome                     |
+| **Mixed (Num+Cat)**    | **Binary / Multi-Class**| **Feature Encoding + ML Methods**   | Encode categoricals, use ML (trees, MI, etc.) for ranking   |
+| **Any Type**           | **Any Type**           | **Mutual Information**              | Non-linear + mixed type support, useful for feature selection|
+
+---
+
+📌 Notes:
+- **Pearson** → Linear numeric relationships
+- **Spearman/Kendall** → Non-linear or monotonic numeric relationships
+- **Point-Biserial** → Special case of Pearson when target is binary
+- **Chi-Square** → Association between categorical variables (independence test)
+- **Cramér’s V** → Normalized Chi-Square for strength (0 to 1)
+- **ANOVA / Eta²** → Tests mean differences of numeric values across categories
+- **Mutual Information** → Captures non-linear & categorical/numeric mix
+
+
+
+📌 Quick Range Guide (Correlation Strength):
+
+| Correlation (r) | Interpretation      |
+|-----------------|---------------------|
+| 0.0 to ±0.2     | Very weak           |
+| ±0.2 to ±0.4    | Weak to moderate    |
+| ±0.4 to ±0.6    | Moderate            |
+| ±0.6 to ±0.8    | Strong              |
+| ±0.8 to ±1.0    | Very strong         |

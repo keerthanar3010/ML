@@ -1,0 +1,51 @@
+Point-Biserial Correlation : Numeric feature and binary classification target 
+
+Example :
+
+>>>   pointbiserialr(dataDF["Age"], dataDF["Purchase Iphone"])
+out : SignificanceResult(statistic=0.6224541988845291, pvalue=2.800233943272445e-44)
+
+r = 0.622  → This is the correlation coefficient
+p = 2.80e-44 → This is the p-value (used to test significance)
+---------------------------------------------------------------------------
+
+
+-- r tells you: How strong and in what direction the relationship is.
+-- p tells you: Can you trust this correlation, or is it just a fluke?
+
+
+
+📌 Point-Biserial Correlation Range & Interpretation**
+
+| Correlation (r)  | Strength         | Direction      |
+|------------------|------------------|----------------|
+| `+0.00 to +0.19` | Very Weak        | Positive       |
+| `+0.20 to +0.39` | Weak             | Positive       |
+| `+0.40 to +0.59` | Moderate         | Positive       |
+| `+0.60 to +0.79` | Strong           | Positive       |
+| `+0.80 to +1.00` | Very Strong      | Positive       |
+| `-0.00 to -0.19` | Very Weak        | Negative       |
+| `-0.20 to -0.39` | Weak             | Negative       |
+| `-0.40 to -0.59` | Moderate         | Negative       |
+| `-0.60 to -0.79` | Strong           | Negative       |
+| `-0.80 to -1.00` | Very Strong      | Negative       |
+
+
+
+
+🧠 What is a p-value?
+
+- A p-value helps you determine whether a result is statistically significant.
+- It tells you:  
+What’s the probability that I would see this result (or something more extreme) if there were actually no real effect (null hypothesis is true)?"
+
+
+What is the range of p-values?
+
+| p-value      | Interpretation                                                 |
+|--------------|----------------------------------------------------------------|
+| > 0.05       | Not statistically significant — likely due to random chance    |
+| ≤ 0.05       | Statistically significant — **likely a real effect**           |
+| ≤ 0.01       | Strong evidence against null hypothesis                        |
+| ≤ 0.001      | Very strong evidence against null                              |
+| Close to 0   | Extremely strong evidence that the effect is real              |
