@@ -8,6 +8,5 @@ This repository contains hands-on implementations of foundational ML algorithms 
 - K-Mean
 - Decision Trees
 - Naive Bayes
-
-## How to Run
-Clone the repo
+- Random Forest
+- Boosting [GBDT]
