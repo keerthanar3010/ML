@@ -10,3 +10,5 @@ This repository contains hands-on implementations of foundational ML algorithms 
 - Naive Bayes
 - Random Forest
 - Boosting [GBDT]
+
+KOSMOS model
