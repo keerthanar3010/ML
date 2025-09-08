@@ -2,20 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo 'Building the App!'
+                git 'https://github.com/keerthanar3010/ML'
             }
         }
-        stage('Test'){
+
+        stage('Build') {
             steps {
-                echo 'Testing the App'
+                sh 'echo "building the app"'
             }
-            }
-            stage('Deploy'){
+        }
+
+        stage('Test') {
             steps {
-                echo 'Deploying the App'
+                sh 'echo "Running tests"'
             }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo "deploying"'
             }
+        }
     }
-    }
+}
